@@ -3,18 +3,86 @@
     width:75%
     
 }
-#gisdatalist{
+ 
+.gisdatalist .heading {
+    background: #0e75d3;
+    color: #fff;
+    width: 25%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.gisdatalist .heading h2 {
+    padding: 0.8rem;
+    
+}
+body {
+    font-family: "Sofia", sans-serif;
+}
+.gisdatalist{
     height: 100vh;
     width:25%;
     
+    
+}
+#Countrydrop{
+    position: absolute;
+    top: 200px;
+    left: 1rem;
+}
+#submitbutton{
+    position: absolute;
+    top: 250px;
+    left: 1rem;
 }
 main {
     display: flex;
 }
-#Start{
-    margin: 20px;
+.gisdatalist #Start {
+     
+    position: absolute;
+    top: 100px;
+    left: 1rem;
 }
-#End{
-    margin: 20px;
+.gisdatalist #End{
+   
+    position: absolute;
+    top: 150px;
+    left: 1rem;
 }
- 
+
+#startdate{
+    margin-left: 4px;
+}
+ #enddate{
+     margin-left: 11px;
+ }
+#daterange{
+    position: absolute;
+    top: 300px;
+    left: 0rem;
+    width:25%;
+    background: #0e75d3;
+    
+}
+#datalist{
+    position: absolute;
+    top: 358px;
+    left: 0rem;
+    width:25%;
+    background: whitesmoke;
+   
+    bottom: 0;
+}
+ #some{
+   
+   padding: 1rem;
+    
+    
+    color:white;
+}
+  #employee_table
+  { 
+    height: 30vh;
+   
+  overflow: auto;}

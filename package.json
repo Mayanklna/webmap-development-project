@@ -1,0 +1,29 @@
+{
+  "name": "webmap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "beefy app.js:bundle.js --live",
+    "bundle": "browserify app.js -o bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mayanklna/webmap-development-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mayanklna/webmap-development-project/issues"
+  },
+  "homepage": "https://github.com/Mayanklna/webmap-development-project#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "leaflet": "^1.7.1"
+  },
+  "devDependencies": {
+    "beefy": "^2.1.8",
+    "browserify": "^17.0.0"
+  }
+}

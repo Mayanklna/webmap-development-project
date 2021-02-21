@@ -2,41 +2,184 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Leaflet Maps</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,400;0,700;1,400&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
     <link rel="stylesheet" href="./style.css">
     
 </head>
+
 <body>
-    <main> 
-        <div id="gisdatalist">
-            
-                <h2>Our outlets</h2>
+  <main> 
+        <div   class="gisdatalist">
+            <div class="heading">
+                <h2>Flood Data</h2>
+            </div>
                <div id="Start"> <form action="/action_page.php">
-                    <label for="start-date"> Start date:</label>
-                    <input type="date" id="birthday" name="birthday">
+                    <label for="start-date">Flood Start date:</label>
+                    <input type="date" id="startdate" name="birthday">
                     
                   </form></div>
                 <div id="End">   <form action="/action_page.php">
-                    <label for="end-date"> End date:</label>
-                    <input type="date" id="birthday" name="birthday">
+                    <label for="end-date">Flood End date:</label>
+                    <input type="date" id="enddate" name="birthday">
                     
                   </form>
                   </div>
-            
-             <button onclick="window.location.href='./flooddata.html';">
-     Submit
-    </button>
+              
+                  <div class="dropdown" id="Countrydrop">
+                  <form action="/action_page.php">
+                    <label for="cars">Choose Country Name:</label>
+                    
+                    <select id="countries" name="countries">
+                      <option value="india">India</option>
+                      <option value="indonesia">Indonesia</option>
+                      <option value="japan">Japan</option>
+                      <option value="laos">Laos</option>
+                      <option value="thailand">Thailand</option>
+                    </select>
+                   
+                    </form>
+                </div>
+            <div id="submitbutton"> 
+             <button type="button" onclick="getVal();"  class="btn btn-primary">
+                <font color="white"> Submit</font>
+    </button></div>
+   <div id="daterange">  <h4 id="some">Flood Range</h4></div>
+   <div id="datalist">
+    <div  >
+        <button  name="load_data" id="load_data" > </button>
+    </div>
+    <br />
+    <div id="employee_table"   >
+    </div>
+       
+       <ul id="data2"  onclick="modalpopup();"></ul>
+       <ul id="data3"  onclick="modalpopup();"></ul>
+       <ul id="data4"  onclick="modalpopup();"></ul>
+   </div>
         </div>
     <div id="map"></div></main>
+ 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script>
     <script src="./app.js"></script>
+     
 </body>
+
 </html>
+<script> var footprint;
+var coordinatesarray;
+var cell_data;
+var country;
+var employee_data;
+function getVal(){var x = document.getElementById("startdate").value
+    var y = document.getElementById("enddate").value
+    country= document.getElementById("countries").value;
+    
+    document.getElementById("some").innerHTML="Flooddata From "+x +" to "+y;
+    document.getElementById("load_data").innerHTML="Load Data";
+    document.getElementById("data2").innerHTML="employee1.csv";
+    document.getElementById("data3").innerHTML="employee2.csv";
+    document.getElementById("data4").innerHTML="employee3.csv";
+}
+
+
+    $(document).ready(function(){
+   $('#load_data').click(function(){ alert(country);
+    $.ajax({
+     url:"employee.csv",
+     dataType:"text",
+     crossOrigin: true,
+              type: 'GET',
+              xhrFields: { withCredentials: true },
+     success:function(data)
+     {
+      employee_data = data.split(/\r?\n|\r/);
+      var table_data = '<table class="table table-bordered table-striped">';
+      for(var count = 0; count<employee_data.length; count++)
+      {     
+              //you will get acctual output in array
+        
+            cell_data = employee_data[count].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            
+       table_data += '<tr id="roweve"  onclick="rowclick(this)">';
+       for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+       {
+        if(count === 0)
+        {
+         table_data += '<th>'+cell_data[cell_count]+'</th>';
+           
+        }
+        else
+        {
+         table_data += '<td>'+cell_data[cell_count]+'</td>';
+        }
+       }
+       table_data += '</tr>';
+      }
+      table_data += '</table>';
+      $('#employee_table').html(table_data);
+     }
+    });
+   });
+   
+  });
+function rowclick(rowno){
+ let msg=rowno.cells[5].innerHTML;
+ 
+ var WithOutBrackets=msg.replace(/[\[\]']+/g,'');
+ var me=WithOutBrackets.replace(/"/g,"");
+         
+//   var obj=  JSON.parse( WithOutBrackets   );
+ //alert(typeof(me));
+ //we have to do string to integer and understand about how array convert into chunk array
+
+  var  coordinates=  me.split(',');
+  console.log( coordinates);
+const chunk =  coordinates => {
+   const size = 2;
+   const chunkedArray = [];
+   for (let i = 0; i <  coordinates.length; i++) {
+      const last = chunkedArray[chunkedArray.length - 1];
+      if(!last || last.length === size){
+         chunkedArray.push([ coordinates[i]]);
+      }else{
+         last.push( coordinates[i]);
+      }
+   };
+   return chunkedArray;
+};
+ 
+       alert(chunk( coordinates));
+    var states = [{
+    "type": "Feature",
+    "properties": {},
+    "geometry": {
+        "type": "Polygon",
+        "coordinates":[[["129.86889616213875", "31.85092400331079"], ["130.13226059277255", "31.804015706859424"], ["130.11415527263486", "31.731335321675704"], ["129.85082873777677", "31.77787200251359"], ["129.86889616213875", "31.85092400331079"]]]
+       }
+
+}];
+ states[0]["geometry"]["coordinates"]=[chunk( coordinates)];
+console.log(states);
+L.geoJSON(states, {
+    style: function(feature) {
+        switch (feature.properties.party) {
+            case 'Republican': return {color: "#ff0000"};
+            case 'Democrat':   return {color: "#0000ff"};
+        }
+    }
+}).addTo(map);
+
+}
+   </script>
