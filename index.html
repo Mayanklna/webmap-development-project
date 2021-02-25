@@ -46,9 +46,23 @@
                       <option value="laos">Laos</option>
                       <option value="thailand">Thailand</option>
                     </select>
+                </form>   
                    
-                    </form>
                 </div>
+                <div id="satellites"> 
+                    
+            <form action="/action_page.php">
+                <label>Choose satellites:</label>
+                <input type="checkbox" id="sat1" name="sat1" value="Planet">
+                <label for="vehicle1">Planet</label>  
+                <input type="checkbox" id="sat2" name="sat2" value="DigitalGlobe">
+                <label for="vehicle2">Digital Globe</label><br>
+                <input type="checkbox" id="sat3" name="sat3" value="Sentinal-I">
+                <label for="vehicle3">Sentinal-I</label>  
+                <input type="checkbox" id="sat4" name="sat4" value="Sentinal-II">
+                <label for="vehicle3">Sentinal-II</label> 
+              </form>
+            </div>
             <div id="submitbutton"> 
              <button type="button" onclick="getVal();"  class="btn btn-primary">
                 <font color="white"> Submit</font>
@@ -62,9 +76,7 @@
     <div id="employee_table"   >
     </div>
        
-       <ul id="data2"  onclick="modalpopup();"></ul>
-       <ul id="data3"  onclick="modalpopup();"></ul>
-       <ul id="data4"  onclick="modalpopup();"></ul>
+      
    </div>
         </div>
     <div id="map"></div></main>
@@ -82,7 +94,29 @@ var coordinatesarray;
 var cell_data;
 var country;
 var employee_data;
-function getVal(){var x = document.getElementById("startdate").value
+ 
+fetch("https://agile-hollows-34401.herokuapp.com/flooddata").then((response) =>{
+    console.log(response);
+  })
+// var filenames=[], foldernames=[];
+
+// $.get("file:///Users/mayank patidar/Desktop/webmapproject/japan",function(response){
+//     document.write(response);
+//     getNames();
+// });
+
+// function getNames()
+// {
+//     var files = document.querySelectorAll("a.icon.file");
+//     var folders = document.querySelectorAll("a.icon.dir");
+//     files.forEach(function(item){filenames.push(item.textContent)})
+//     folders.forEach(function(item){foldernames.push(item.textContent.slice(0,-1))})
+//     console.log(filenames);
+//     console.log(foldernames);
+// }
+function getVal(){
+ 
+ var x = document.getElementById("startdate").value
     var y = document.getElementById("enddate").value
     country= document.getElementById("countries").value;
     

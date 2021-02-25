@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Mayanklna/webmap-development-project#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "leaflet": "^1.7.1"
   },
