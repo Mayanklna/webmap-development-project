@@ -55,7 +55,7 @@
                     <label>Choose satellites:</label>
                     <input type="checkbox" id="sat1" name="sat1" value="Planet">
                     <label for="vehicle1">Planet</label>  
-                    <input type="checkbox" id="sat2" name="sat2" value="DigitalGlobe">
+                    <input type="checkbox" id="sat2" name="sat2" value="Digital Globe">
                     <label for="vehicle2">Digital Globe</label><br>
                     <input type="checkbox" id="sat3" name="sat3" value="Sentinal-I">
                     <label for="vehicle3">Sentinal-I</label>  
@@ -91,6 +91,8 @@
     var cell_data;
     var actualdata;
     var country;
+    var s1,s2,s3,s4;
+    var satellites;
     var employee_data;
     var flooddatasearch;
     var csvflooddata;
@@ -101,6 +103,7 @@
      var setstart;
      var setend;
      var requireddata=[];
+     var finaldata=[];
      var floodname=[];
      var csvfloodsarray=[];
      var selectcountry;
@@ -147,9 +150,17 @@
       
       var x = document.getElementById("startdate").value
        var  y= document.getElementById("enddate").value
-         selectcountry= document.getElementById("countries").value;
-        x = x.replace(/\-/g, '/');
-        y=y.replace(/\-/g, '/');
+       selectcountry= document.getElementById("countries").value;
+       if(document.getElementById("sat1").checked ===true){
+       s1= document.getElementById("sat1").value;}
+       if(document.getElementById("sat2").checked ===true){
+       s2= document.getElementById("sat2").value;}
+       if(document.getElementById("sat3").checked ===true){
+       s3= document.getElementById("sat3").value;}
+       if(document.getElementById("sat4").checked ===true){
+       s4= document.getElementById("sat4").value;}
+       x = x.replace(/\-/g, '/');
+       y=y.replace(/\-/g, '/');
          setstart=formatDate(x);
          setend=formatDate(y);
          
@@ -166,6 +177,7 @@
           startdate=actualdata[j]["StartDate"];
           enddate=actualdata[j]["EndDate"];
           country=actualdata[j]["CountryName"];
+          satellites=actualdata[j]["SatelliteName"];
           var d1 = setstart.split("/");
     var d2 =setend.split("/");
     var c1 = startdate.split("/");
@@ -174,10 +186,10 @@
     var to   = new Date(d2[2], parseInt(d2[1])-1, d2[0]);
     var check1 = new Date(c1[2], parseInt(c1[1])-1, c1[0]);
     var check2 = new Date(c2[2], parseInt(c2[1])-1, c2[0]);
-    if((check1 > from && check1 < to)&&(check2 > from && check2 < to)&&selectcountry===country){
+    if((check1 > from && check1 < to)&&(check2 > from && check2 < to)&&selectcountry===country && (s1===satellites ||s2===satellites||s3===satellites||s4===satellites)){
          console.log("in date range" +selectcountry);
          requireddata.push(actualdata[j]["FloodCSVData"]);
-         floodname.push("Flood data-"+country+" from "+startdate+" to "+enddate);
+         floodname.push("Flood data-"+country+" from "+startdate+" to "+enddate +" "+satellites+" data");
     }
      else if(j==actualdata.length-1 &&requireddata.length==0){
        alert("no data found");
@@ -187,20 +199,52 @@
     // console.log(check2 > from && check2 < to);
     }
     
-    console.log(requireddata[0]);
+     
     if(requireddata.length !=0){
-    for(var k=0;k<requireddata[0].length;k++){
-      requireddata[0][k]["geometry"]= JSON.stringify(requireddata[0][k]["geometry"]);
-       
+    for(var l=0;l<requireddata.length;l++){
+    for(var k=0;k<requireddata[l].length;k++){
+      requireddata[l][k]["footprint"]= JSON.stringify(requireddata[l][k]["footprint"]);
       
-      if(k==requireddata[0].length-1){
+       
+      if(k==requireddata[l].length-1){
         ispaused=true;
       }
      }
+    }
     console.log(requireddata);
     //convert json to csv 
     for(var f=0;f<requireddata.length;f++){
+      for(var g=0;g<requireddata[f].length;g++){
+        delete requireddata[f][g]["permissions"];
+        delete requireddata[f][g]["links_self"];
+        delete requireddata[f][g]["links_assets"];
+        delete requireddata[f][g]["links_thumbnail"];
+        delete requireddata[f][g]["clear_confidence_percent"];
+        delete requireddata[f][g]["clear_percent"];
+        delete requireddata[f][g]["columns"];
+        delete requireddata[f][g]["ground_control"];
+        delete requireddata[f][g]["heavy_haze_percent"];
+        delete requireddata[f][g]["light_haze_percent"];
+        delete requireddata[f][g]["pixel_resolution"];
+        delete requireddata[f][g]["published"];
+         delete requireddata[f][g]["publishing_stage"];
+         delete requireddata[f][g]["quality_category"];
+         delete requireddata[f][g]["rows"]; 
+         delete requireddata[f][g]["satellite_id"];
+         delete requireddata[f][g]["shadow_percent"];
+         delete requireddata[f][g]["snow_ice_percent"];
+         delete requireddata[f][g]["strip_id"];
+         delete requireddata[f][g]["sun_azimuth"];
+         delete requireddata[f][g]["link"];
+         delete requireddata[f][g]["sun_elevation"];
+         delete requireddata[f][g]["updated"];
+         delete requireddata[f][g]["view_angle"];
+         delete requireddata[f][g]["visible_confidence_percent"];
+         delete requireddata[f][g]["visible_percent"];
+
+      }
     flooddatasearch=requireddata[f];
+    console.log(requireddata[f]);
     var fields = Object.keys(flooddatasearch[0])
     var replacer = function(key, value) { return value === null ? '' : value } 
      csvflooddata =flooddatasearch.map(function(row){
@@ -230,7 +274,7 @@
         alert("submit again");
       }
      document.getElementById('datalist').innerHTML=text; 
-    
+     
      
     }
      
@@ -240,23 +284,24 @@
     }
 
 function flytoloaction(i){
-  map.flyTo([ requireddata[i][0]["Longitude"],requireddata[i][0]["Latitude"]],8,{
+  map.flyTo([requireddata[i][0]["Latitude"],requireddata[i][0]["Longitude"]],8,{
     duration:3
   })
-  var a=requireddata[i][0]["Longitude"];
-  var b=requireddata[i][0]["Latitude"];
+ var a=requireddata[i][0]["Latitude"];
+ var b=requireddata[i][0]["Longitude"];
  var x=a-1
-    var y=a+1
-   var  x1=b-1
-   var y1=b+1
+ var y=a+1
+ var  x1=b-1
+ var y1=b+1
    
-    var latlngs = [ [ x,x1], [ y, x1 ], [ y, y1 ], [ x, y1 ], [x, x1 ]];
+    var latlngs = [ [ x,x1],[ x, y1 ], [ y, y1 ], [ y, x1 ], [x, x1 ]];
     var polygon = L.polygon(latlngs, {color: 'red'}).addTo(map);
 
 // // zoom the map to the polygon
 // map.fitBounds(polygon.getBounds());
 }
 
+ 
 function Loadcsv(i){
        
        flytoloaction(i);
@@ -275,7 +320,7 @@ function Loadcsv(i){
            {
             if(count === 0)
             {
-             table_data += '  <th  >  '+cell_data[cell_count]+'</th>';
+             table_data += '  <th>  '+cell_data[cell_count]+'</th>';
                
             }
             
@@ -299,7 +344,8 @@ function Loadcsv(i){
     
          
     function rowclick(rowno){
-     let msg=rowno.cells[5].innerHTML;
+       
+     let msg=rowno.cells[4].innerHTML;
      
      var WithOutBrackets=msg.replace(/[\[\]']+/g,'');
      var me=WithOutBrackets.replace(/"/g,"");
