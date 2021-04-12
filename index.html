@@ -32,6 +32,7 @@
   </head>
 
   <body>
+     <div id="pano"></div>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -75,7 +76,14 @@
         </div><!--/.navbar-collapse -->
       </div>
     </div>
-
+    <div id="loading">
+      <div class="loading-indicator">
+        <div class="progress progress-striped active" style="width:auto">
+          <div class="progress-bar progress-bar-striped progress-bar-full"  ></div>
+        </div>
+      </div>
+    </div> 
+    
     <div id="container">
     
       <div id="sidebar">
@@ -148,12 +156,32 @@
               <h3 class="panel-title">Satellite Sensors Data
               </h3>
             </div>
-
-            <div class ="flooddataclass"  >
+            
+            <div class="opticalorsar"  >
+              <div  id="opticalorsardata"></div> 
+              <div class ="flooddataclass"  >
        
-             <ul class="list-group" id="feature-list">   </ul>
-             
+                <ul class="list-group" id="feature-list">   </ul>
+                
+               </div>
             </div>
+            <div class="optical"  >
+              <div   id="opticaldata"></div> 
+              <div class ="flooddataclass1"  >
+       
+                <ul class="list-group" id="feature-list1">   </ul>
+                
+               </div>
+            </div>
+            <div class="sar"  >
+              <div   id="sardata"></div> 
+              <div class ="flooddataclass2"  >
+       
+                <ul class="list-group" id="feature-list2">   </ul>
+                
+               </div>
+            </div>
+         
             <!-- <div class="sidebar-table">
              
               <table class="table table-hover" id="feature-list">
@@ -176,14 +204,8 @@
       </div>
       <div id="map"></div>
     </div>
-    <!-- <div id="loading">
-      <div class="loading-indicator">
-        <div class="progress progress-striped active">
-          <div class="progress-bar progress-bar-info progress-bar-full"></div>
-        </div>
-      </div>
-    </div> 
--->
+    
+
 
     <!-- <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-lg">
@@ -374,6 +396,23 @@
  
 </html>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
 <script  >
   var footprint;
   var coordinatesarray;
@@ -848,4 +887,4 @@ function Loadcsv(i){
      
     // });
      </script>
-
+ -->
