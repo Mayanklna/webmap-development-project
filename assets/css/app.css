@@ -1,4 +1,4 @@
-html, body, #container {
+ html, body, #container {
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -14,14 +14,18 @@ html, body, #container {
 }
 body {
   padding-top: 50px;
-  font-family: "Lucida Sans", sans-serif  ;
+  font-family: 'Courgette', cursive;
+  font-family: 'Dancing Script', cursive;
+  font-family: 'Lobster Two', cursive;
+  font-family: 'Satisfy', cursive;
+ 
 }
 input[type="radio"], input[type="checkbox"] {
   margin: 0;
 }
 #sidebar {
   display: block;
-  width: 250px;
+  width: 300px;
   height: 100%;
   max-width: 100%;
   float: left;
@@ -74,19 +78,19 @@ input[type="radio"], input[type="checkbox"] {
   color: #FFFFFF;
 }
 .panel-heading{
-   width: 250px;
+  width: 300px;
 }
 #panel-heading2{
-  width: 250px;
+  width: 300px;
   height: 0px;
 }
 .panel-body{
-  width: 250px;
+  width: 300px;
  
 }
 .feature-row {
   cursor: pointer;
-  width: 250px;
+  width: 300px;
 }
 .sidebar-wrapper {
   width: 100%;
@@ -94,42 +98,122 @@ input[type="radio"], input[type="checkbox"] {
   position: relative;
   
 }
-
+ 
+#opticaldata{
+  margin-bottom: 0px;
+  background-color:#F0F3F4;  
+  padding:11px;
+}
+#sardata{
+  margin-bottom: 0px;
+  font-style: bold;
+  background-color:#F0F3F4 ;
+  padding:11px;  
+}
+#weblink{
+  margin-bottom: 0px;
+  
+  background-color:#F0F3F4 ;
+  padding:11px;
+}
 .flooddataclass{
-  position: absolute;
+   
+  position: relative;
   width:100% ;
-  
-  
+  margin: 0;
 }
  
-.flooddataclass #feature-list li{
-  padding :0.8rem  ;
-  border: .4px solid #D0D3D4;
-  color: #000000;
-}
  
-.flooddataclass #feature-list ol {
+ 
+ 
+ 
+ 
+ 
+.flooddataclass #feature-list1  {
   padding :0 ;
   margin:0;
+  display: block;
   overflow: auto;
-  width:750px;
+  width:300px;
+ 
+ 
 }
-.flooddataclass #feature-list ol li{
+.flooddataclass #feature-list1 li{
   padding :0.8rem  ;
-  
+  border: .2px solid #D0D3D4;
+  color: #2e2e2e;
+}
+ 
+ 
+.flooddataclass #feature-list1   li{
+  padding :0.8rem  ;
+  display: inline-block;
   border: .3px solid  #D0D3D4;
   
 }
-.flooddataclass #feature-list ol li:hover{
-  background-color: #ffffff;
-  
-}
-.flooddataclass #feature-list li:hover {
+ 
+.flooddataclass #feature-list1 li:hover {
   background-color: #ECF0F1;
   
   
 }
  
+.flooddataclass #feature-list2 li{
+  padding :0.8rem  ;
+  border: .2px solid #D0D3D4;
+  color: #2e2e2e;
+   
+}
+ 
+.flooddataclass #feature-list2   {
+  padding :0 ;
+  display: block;
+  margin: 0;
+  overflow: auto;
+  
+  width:300px;
+}
+.flooddataclass #feature-list2  li{
+  padding :0.8rem  ;
+  display: inline-block;
+  border: .3px solid  #D0D3D4;
+  
+}
+ 
+.flooddataclass #feature-list2 li:hover {
+  background-color: #ECF0F1;
+    
+}
+
+/*  */
+.flooddataclass #feature-list3 li{
+  padding :0.8rem  ;
+  border: .2px solid #D0D3D4;
+  color: #0e75d3;
+   
+}
+ 
+.flooddataclass #feature-list3   {
+  padding :0 ;
+  display: block;
+  margin: 0;
+  overflow: auto;
+  
+  width:300px;
+}
+.flooddataclass #feature-list3  li{
+  padding :0.8rem  ;
+  display: inline-block;
+  border: .3px solid  #D0D3D4;
+  
+}
+ 
+.flooddataclass #feature-list3 li:hover {
+  background-color: #ECF0F1;
+    
+}
+
+
 .leaflet-control-layers {
   overflow: auto;
 }
@@ -151,6 +235,7 @@ input[type="radio"], input[type="checkbox"] {
 .navbar-collapse.in {
   overflow-y: hidden;
 }
+  
 .navbar-header .navbar-icon-container {
   margin-right: 15px;
 }

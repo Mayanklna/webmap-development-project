@@ -1,391 +1,380 @@
- 
-var   featureList, boroughSearch = [], theaterSearch = [], museumSearch = [];
-const map=L.map('map').setView([22.9074872, 79.07306671],2);
-const tileUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const attribution='&copy; <a href="http://floodlist.com/">Floodlist</a>❤️';
-const tileLayer = L.tileLayer(tileUrl, {  attribution });
+
+var featureList, boroughSearch = [], theaterSearch = [], museumSearch = [];
+const map = L.map('map').setView([22.9074872, 79.07306671], 2);
+const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const attribution = '&copy; <a add target="_blank" href="http://floodlist.com/">Floodlist</a>❤️';
+const tileLayer = L.tileLayer(tileUrl, { attribution });
 tileLayer.addTo(map);
 
 var footprint;
 var coordinatesarray;
 var cell_data;
 var actualdata;
+var weblinkdata;
 var country;
-var s1,s2,s3,s4,s5;
+var s1, s2, s3, s4, s5, d1, d2, c1, c2;
 var datacheck;
 var satellites;
-var employee_data;
+ 
 var flooddatasearch;
 var csvflooddata;
- var ispaused=false;
- var issubmit=false;
- var startdate;
- var enddate;
- var setstart;
- var setend;
- var requireddata=[];
- var finaldata=[];
- var floodname=[];
- var csvfloodsarray=[];
- var selectcountry;
- var detaildata; 
-$(document).ready(function(){
-    
+var ispaused = false;
+var issubmit = false;
+var startdate;
+var enddate;
+var setstart;
+var setend;
+var allflooddata1 = [];
+var allflooddata2 = [];
+var requireddata1 = [];
+var requireddata2 = [];
+var requiredweblink = [];
+var finaldata = [];
+var floodname1 = [];
+var floodname2 = [];
+
+var selectcountry;
+var detaildata;
+$(document).ready(function () {
+
   $.ajax({
-   url:'https://agile-hollows-34401.herokuapp.com/flooddata',
-   type: 'GET',
-   
-   success:function(allflood)
-   { 
- 
-    actualdata=allflood;
-    console.log(actualdata);
-  if(typeof(actualdata)=="object"){
-    issubmit=true;
-    $("#loading").hide();
-    $("#pano").hide();
-  }
-  
+    url: 'https://agile-hollows-34401.herokuapp.com/flooddata',
+    type: 'GET',
 
-}
-   ,
-   error:function(error)
-   { 
-    console.log(error);
-     
+    success: function (allflood) {
+
+      actualdata = allflood;
+      console.log(actualdata);
+
+      $("#loading").hide();
+      $("#pano").hide();
+
+
     }
-  });});
+    ,
+    error: function (error) {
+      console.log(error);
 
-    
-  function formatDate (input) {
-    var datePart = input.match(/\d+/g),
-    year = datePart[0] , // get only two digits
+    }
+  });
+});
+$("#sardata").hide();
+$("#opticaldata").hide();
+$("#weblink").hide();
+$(document).ready(function () {
+
+  $.ajax({
+    url: 'https://agile-hollows-34401.herokuapp.com/weblinks',
+    type: 'GET',
+
+    success: function (alllink) {
+
+      weblinkdata = alllink;
+      console.log(weblinkdata);
+
+    }
+    ,
+    error: function (error) {
+      console.log(error);
+
+    }
+  });
+});
+function formatDate(input) {
+  var datePart = input.match(/\d+/g),
+    year = datePart[0], // get only two digits
     month = datePart[1], day = datePart[2];
-  
-    return day+'/'+month+'/'+year;
-  }
-  function getVal(){
-    requireddata.length=0;
-    $("#panel-heading").hide();
-     
-    var x = document.getElementById("startdate").value
-     var  y= document.getElementById("enddate").value
-     selectcountry= document.getElementById("countries").value;
-     if(document.getElementById("planet").checked ===true ||document.getElementById("sentinal2").checked ===true||document.getElementById("digital").checked ===true){
-       document.getElementById("opticalorsardata").innerHTML=" <h3 class='panel-title'style='background-color:#F0F3F4 ;padding:10px;'>Optical Satellite Sensors</h3> ";
-     }
-     if(document.getElementById("sentinal1").checked ===true ||document.getElementById("alos2").checked ===true ){
-      document.getElementById("opticalorsardata").innerHTML=" <h3 class='panel-title'style='background-color:#F0F3F4;padding:10px;'>SAR Satellite Sensors</h3> ";
-    }
-    if((document.getElementById("planet").checked ===true ||document.getElementById("sentinal2").checked ===true||document.getElementById("digital").checked ===true)&&(document.getElementById("sentinal1").checked ===true ||document.getElementById("alos2").checked ===true )){
-      
-    //  document.getElementById("opticaldata").innerHTML=" <h3 class='panel-title'style='background-color:#F0F3F4;padding:10px;'>Optical Satellite Sensors</h3> ";
-    //  document.getElementById("sardata").innerHTML=" <h3 class='panel-title'style='background-color:#F0F3F4;padding:10px;'>SAR Satellite Sensors</h3> ";
-    document.getElementById("opticalorsardata").innerHTML=" <h3 class='panel-title'style='background-color:#F0F3F4;padding:10px;'>Optical & SAR Satellite Sensors</h3> ";
-   
-    }
-     if(document.getElementById("planet").checked ===true){
-     s1= document.getElementById("planet").value;
-      }
-     if(document.getElementById("sentinal1").checked ===true){
-     s2= document.getElementById("sentinal1").value;
-      }
-     if(document.getElementById("sentinal2").checked ===true){
-     s3= document.getElementById("sentinal2").value;}
-     if(document.getElementById("digital").checked ===true){
-     s4= document.getElementById("digital").value;}
-     if(document.getElementById("alos2").checked ===true){
-     s5= document.getElementById("alos2").value;}
-     x = x.replace(/\-/g, '/');
-     y=y.replace(/\-/g, '/');
-       setstart=formatDate(x);
-       setend=formatDate(y);
-       
-   
-  
-   
-    // var flooddatasearch = JSON.parse(actualdata);
-   
-  
-  for(var j=0;j<actualdata.length;j++){
-  
-         
-      
-        startdate=actualdata[j]["StartDate"];
-        enddate=actualdata[j]["EndDate"];
-        country=actualdata[j]["CountryName"];
-        satellites=actualdata[j]["SatelliteName"];
-        var d1 = setstart.split("/");
-  var d2 =setend.split("/");
-  var c1 = startdate.split("/");
-  var c2=enddate.split("/");
-  var from = new Date(d1[2], parseInt(d1[1])-1, d1[0]);  // -1 because months are from 0 to 11
-  var to   = new Date(d2[2], parseInt(d2[1])-1, d2[0]);
-  var check1 = new Date(c1[2], parseInt(c1[1])-1, c1[0]);
-  var check2 = new Date(c2[2], parseInt(c2[1])-1, c2[0]);
-  if((check1 > from && check1 < to)&&(check2 > from && check2 < to)&&selectcountry===country && (s1===satellites ||s3===satellites||s4===satellites )){
-       console.log("in date range" +selectcountry);
-       requireddata.push(actualdata[j]["FloodCSVData"]);
-       floodname.push("Flood data-"+country+" from "+startdate+" to "+enddate +" "+satellites+" data");
-  }
-  else if((check1 > from && check1 < to)&&(check2 > from && check2 < to)&&selectcountry===country && (s2===satellites ||s5===satellites )){
-    console.log("in date range" +selectcountry);
-    requireddata.push(actualdata[j]["FloodCSVData"]);
-    floodname.push("Flood data-"+country+" from "+startdate+" to "+enddate +" "+satellites+" data");
+
+  return day + '/' + month + '/' + year;
 }
-else if((check1 > from && check1 < to)&&(check2 > from && check2 < to)&&selectcountry===country &&   (s1===satellites ||s3===satellites||s4===satellites ) && (s2===satellites ||s5===satellites )){
-  console.log("in date range" +selectcountry);
-  requireddata.push(actualdata[j]["FloodCSVData"]);
-  floodname.push("Flood data-"+country+" from "+startdate+" to "+enddate +" "+satellites+" data");
-}
-   
-   else if(j==actualdata.length-1 &&requireddata.length==0){
-     alert("no data found");
-   }
-  // console.log(check1 > from && check1 < to);
-  // console.log("to");
-  // console.log(check2 > from && check2 < to);
+function getVal() {
+
+  s1 = "";
+  s2 = "";
+  s3 = "";
+  s4 = "";
+  s5 = "";
+  document.getElementById('feature-list1').innerHTML = "";
+  document.getElementById('feature-list2').innerHTML = "";
+  document.getElementById('feature-list3').innerHTML = "";
+  $("#panel-heading").hide();
+
+  var x = document.getElementById("startdate").value
+  var y = document.getElementById("enddate").value
+  selectcountry = document.getElementById("countries").value;
+
+  if (document.getElementById("planet").checked === true) {
+    s1 = document.getElementById("planet").value;
   }
-  
-   
-  if(requireddata.length !=0){
-  for(var l=0;l<requireddata.length;l++){
-  for(var k=0;k<requireddata[l].length;k++){
-    requireddata[l][k]["footprint"]= JSON.stringify(requireddata[l][k]["footprint"]);
-    
-     
-    if(k==requireddata[l].length-1){
-      ispaused=true;
+  if (document.getElementById("sentinel1").checked === true) {
+    s2 = document.getElementById("sentinel1").value;
+  }
+  if (document.getElementById("sentinel2").checked === true) {
+    s3 = document.getElementById("sentinel2").value;
+  }
+  if (document.getElementById("digital").checked === true) {
+    s4 = document.getElementById("digital").value;
+  }
+  if (document.getElementById("alos2").checked === true) {
+    s5 = document.getElementById("alos2").value;
+  }
+  x = x.replace(/\-/g, '/');
+  y = y.replace(/\-/g, '/');
+  setstart = formatDate(x);
+  setend = formatDate(y);
+
+
+
+
+
+  //weblink-parsing
+  for (var j = 0; j < weblinkdata.length; j++) {
+
+    startdate = weblinkdata[j]["StartDate"];
+    startdate.replace(/\-/g, '/');
+    startdate = formatDate(startdate);
+    enddate = weblinkdata[j]["EndDate"];
+    enddate.replace(/\-/g, '/');
+    enddate = formatDate(enddate);
+    country = weblinkdata[j]["CountryName"];
+
+    d1 = setstart.split("/");
+    d2 = setend.split("/");
+    c1 = startdate.split("/");
+    c2 = enddate.split("/");
+    var from = new Date(d1[2], parseInt(d1[1]) - 1, d1[0]);  // -1 because months are from 0 to 11
+    var to = new Date(d2[2], parseInt(d2[1]) - 1, d2[0]);
+    var check1 = new Date(c1[2], parseInt(c1[1]) - 1, c1[0]);
+    var check2 = new Date(c2[2], parseInt(c2[1]) - 1, c2[0]);
+
+    if ((check1 > from && check1 < to) && (check2 > from && check2 < to) && (selectcountry === country)) {
+      $("#weblink").show();
+      requiredweblink.push(weblinkdata[j]["weblink"]);
     }
-   }
   }
-  console.log(requireddata);
-  //convert json to csv 
-  for(var f=0;f<requireddata.length;f++){
-    for(var g=0;g<requireddata[f].length;g++){
-      delete requireddata[f][g]["permissions"];
-      delete requireddata[f][g]["links_self"];
-      delete requireddata[f][g]["links_assets"];
-      delete requireddata[f][g]["links_thumbnail"];
-      delete requireddata[f][g]["clear_confidence_percent"];
-      delete requireddata[f][g]["clear_percent"];
-      delete requireddata[f][g]["columns"];
-      delete requireddata[f][g]["ground_control"];
-      delete requireddata[f][g]["heavy_haze_percent"];
-      delete requireddata[f][g]["light_haze_percent"];
-      delete requireddata[f][g]["pixel_resolution"];
-      delete requireddata[f][g]["published"];
-       delete requireddata[f][g]["publishing_stage"];
-       delete requireddata[f][g]["quality_category"];
-       delete requireddata[f][g]["rows"]; 
-       delete requireddata[f][g]["satellite_id"];
-       delete requireddata[f][g]["shadow_percent"];
-       delete requireddata[f][g]["snow_ice_percent"];
-       delete requireddata[f][g]["strip_id"];
-       delete requireddata[f][g]["sun_azimuth"];
-       delete requireddata[f][g]["link"];
-       delete requireddata[f][g]["sun_elevation"];
-       delete requireddata[f][g]["updated"];
-       delete requireddata[f][g]["view_angle"];
-       delete requireddata[f][g]["visible_confidence_percent"];
-       delete requireddata[f][g]["visible_percent"];
+
+  //flooddata-parsing
+  for (var j = 0; j < actualdata.length; j++) {
+
+    startdate = actualdata[j]["StartDate"];
+    startdate.replace(/\-/g, '/');
+    startdate = formatDate(startdate);
+    enddate = actualdata[j]["EndDate"];
+    enddate.replace(/\-/g, '/');
+    enddate = formatDate(enddate);
+    country = actualdata[j]["CountryName"];
+    satellites = actualdata[j]["SatelliteName"];
+    d1 = setstart.split("/");
+    d2 = setend.split("/");
+    c1 = startdate.split("/");
+    c2 = enddate.split("/");
+    var from = new Date(d1[2], parseInt(d1[1]) - 1, d1[0]);  // -1 because months are from 0 to 11
+    var to = new Date(d2[2], parseInt(d2[1]) - 1, d2[0]);
+    var check1 = new Date(c1[2], parseInt(c1[1]) - 1, c1[0]);
+    var check2 = new Date(c2[2], parseInt(c2[1]) - 1, c2[0]);
+
+    if ((check1 > from && check1 < to) && (check2 > from && check2 < to) && (selectcountry === country) && (s1 === satellites || s3 === satellites || s4 === satellites) && (s2 !== satellites || s5 != satellites)) {
+      $("#opticaldata").show();
+
+      requireddata1.push(actualdata[j]["flooddata"]);
+      allflooddata1.push(actualdata[j]["flooddata"]);
+      floodname1.push("Flood data-" + country + " from " + startdate + " to " + enddate + " " + satellites + " data");
 
     }
-  flooddatasearch=requireddata[f];
-  console.log(requireddata[f]);
-  var fields = Object.keys(flooddatasearch[0])
-  var replacer = function(key, value) { return value === null ? '' : value } 
-   csvflooddata =flooddatasearch.map(function(row){
-    return fields.map(function(fieldName){
-      return JSON.stringify(row[fieldName], replacer)
-    }).join(',')
-  })
-  csvflooddata.unshift(fields.join(',')) // add header column
-  csvflooddata  = csvflooddata.join('\r\n');
-  csvfloodsarray.push(csvflooddata);
+    else if ((check1 > from && check1 < to) && (check2 > from && check2 < to) && selectcountry === country && (s2 === satellites || s5 === satellites) && (s1 != satellites || s3 != satellites || s4 != satellites)) {
+      $("#sardata").show();
+
+      requireddata2.push(actualdata[j]["flooddata"]);
+      allflooddata2.push(actualdata[j]["flooddata"]);
+      floodname2.push("Flood data-" + country + " from " + startdate + " to " + enddate + " " + satellites + " data");
+
+    }
+
+  }
+
+  if ((document.getElementById("planet").checked === false) && (document.getElementById("sentinel2").checked === false) && (document.getElementById("digital").checked === false)) {
+    $("#opticaldata").hide();
+  }
+  if ((document.getElementById("sentinel1").checked === false) && (document.getElementById("alos2").checked === false)) {
+    $("#sardata").hide();
+  }
+  if ((document.getElementById("planet").checked === false) && (document.getElementById("sentinel2").checked === false) && (document.getElementById("digital").checked === false) && (document.getElementById("sentinel1").checked === false) && (document.getElementById("alos2").checked === false) && (weblinkdata.length === 0)) {
+    $("#panel-heading").show();
+    $("#opticaldata").hide();
+    $("#sardata").hide();
+    alert("please select any sensor");
+  }
+
+  console.log(requiredweblink);
+  console.log(requireddata1);
+  console.log(requireddata2);
+   
+  if (requiredweblink.length != 0) {
+    var text = "";
+    for (var i = 0; i < requiredweblink.length; i++) {
+
+      // if(i>0){text=text+"<hr style='height:1px;border-width:0px;color:gray;background-color:gray'/>";}  
+      text = text + "<li name='load_data' id='#load_data'   '><img width='16' height='18' src='assets/img/floodlist-icon.png'><a add target='_blank's href='" + requiredweblink[i] + "'>" + requiredweblink[i] + "</a></li>";
+
+
+    }
+
+    document.getElementById('feature-list3').innerHTML = text;
+
+  }
+  if (requireddata1.length != 0) {
+    var text1 = "";
+    for (var i = 0; i < requireddata1.length; i++) {
+
+      // if(i>0){text=text+"<hr style='height:1px;border-width:0px;color:gray;background-color:gray'/>";}  
+      text1 = text1 + "<li name='load_data' id='#load_data'  onclick='usershowtable(" + i + "," + actualdata[i][0]["Latitude"] + ");'><img width='16' height='18' src='assets/img/flood.png'>" + floodname1[i] + "</li><div id='user-list" + i + "' style='overflow: auto;'></div>";
+
+
+    }
+
+    document.getElementById('feature-list1').innerHTML = text1;
+
+  }
+  if (requireddata2.length != 0) {
+      
+    var text2 = "";
+    for (var i = 0; i < requireddata2.length; i++) {
+
+      // if(i>0){text=text+"<hr style='height:1px;border-width:0px;color:gray;background-color:gray'/>";}  
+      text2 = text2 + "<li name='load_data' id='#load_data'  onclick='usershowtable1(" + i + "," + requireddata2[i][0][""] + ");'><img width='16' height='18' src='assets/img/flood.png'>" + floodname2[i] + "</li><div id='user-list" + i + "' style='overflow: auto;'></div>";
+
+
+    }
+    document.getElementById('feature-list2').innerHTML = text2;
+
+  }
+  requireddata1.splice(0, requireddata1.length);
+  requireddata2.splice(0, requireddata2.length);
+  floodname1.splice(0, floodname1.length);
+  floodname2.splice(0, floodname2.length);
 }
+function flytoloaction1(i) {
+  
+  map.flyTo([allflooddata1[i][0]["Latitude"], allflooddata1[i][0]["Longitude"]], 8, {
+    duration: 3
+  })
+  var a = allflooddata1[i][0]["Latitude"];
+  var b = allflooddata1[i][0]["Longitude"];
+  var x = a - 1
+  var y = a + 1
+  var x1 = b - 1
+  var y1 = b + 1
+
+  var latlngs = [[x, x1], [x, y1], [y, y1], [y, x1], [x, x1]];
+  var polygon = L.polygon(latlngs, { color: 'red' }).addTo(map);
     
-      // document.getElementById("load_data").innerHTML="Load Data";
-      if(issubmit){
-   var text = "";
-      for (var i =0;i<requireddata.length;i++)
-      {   
-       
-        // if(i>0){text=text+"<hr style='height:1px;border-width:0px;color:gray;background-color:gray'/>";}  
-               text = text + "<li name='load_data' id='#load_data'  onclick='usershowtable("+i+");' ><img width='16' height='18' src='assets/img/flood.png'>"+floodname[i] +"  </li>  <div id='user-list"+i+"' style='overflow: auto;'></div> " ;
-              
+  // // zoom the map to the polygon
+  // map.fitBounds(polygon.getBounds());
+}
+
+function usershowtable1(i) {
+
+  flytoloaction1(i);
+   var table_data=""
+
+
+   
+    
       
+  document.getElementById('user-list'+i+'').style.height = 50+ "vh";
+         $('#user-list'+i+'').html(table_data); 
+
+}
+function Loadcsv(i) {
+
+  if (ispaused) {
+
+
+    var table_data1 = '<table class="table table-bordered table-striped"  > ';
+    for (var count = 0; count < 2; count++) {
+      //you will get acctual output in array
+      if (count == 0) {
+        cell_data = detaildata[count].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
       }
-    
-    }
-    else{
-      alert("submit again");
-    }
-   document.getElementById('feature-list').innerHTML=text;
-  }}
-  function flytoloaction(i){
-    map.flyTo([requireddata[i][0]["Latitude"],requireddata[i][0]["Longitude"]],8,{
-      duration:3
-    })
-    var a=requireddata[i][0]["Latitude"];
-    var b=requireddata[i][0]["Longitude"];
-    var x=a-1
-    var y=a+1
-    var  x1=b-1
-    var y1=b+1
-     
-      var latlngs = [ [ x,x1],[ x, y1 ], [ y, y1 ], [ y, x1 ], [x, x1 ]];
-      var polygon = L.polygon(latlngs, {color: 'red'}).addTo(map);
-    
-    // // zoom the map to the polygon
-    // map.fitBounds(polygon.getBounds());
-    }
-    
-    function usershowtable(i){
-       
-      flytoloaction(i);
-         if(ispaused){
-       
-        employee_data =csvfloodsarray[i].split(/\r?\n|\r/);
-        detaildata=employee_data;
-            var table_data = '<ol><li ><b>Select </b>&nbsp;&nbsp;&nbsp;'+"          "+'<b>Sensor </b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+"          "+'<b>Acquired</b>&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+"          "+'<b>Cloud Cover</b>&nbsp;&nbsp;&nbsp;&nbsp;'+"          "+'<b>Provider</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '+"          "+'<b>Details</b></li>';
-            for(var count = 1; count<employee_data.length; count++)
-            {     
-                    // //you will get acctual output in array
-                    // if(count>1){
-                    //   table_data +=  '<li >Select'+"          "+'Sensor'+"          "+' Acquired'+"          "+'Cloud Cover'+"          "+'Provider'+"          "+'Details';
-                   
-                        
-                    //   }
-              
-            cell_data = employee_data[count].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                  
-            
-            if(cell_data[8].length===3){
-              cell_data[8]+="0";
-            }
-            if(cell_data[8].length===1){
-            cell_data[8]+=".00";
-            }
-          
-            // if(cell_data[12].length===3){
-            //    table_data +=  '<li  onclick="Loadcsv('+count+');">'+' <input type="checkbox" class="custom-control-input" id="customCheck">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+"          "+cell_data[12].replace(/"/g,"")+ "<b>.DD</b>"+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+cell_data[6].replace(/"/g,"")+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+cell_data[8].replace(/"/g,"")+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+cell_data[16].replace(/"/g,"")+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+'<i class="fa fa-plus-circle" style="font-size:20px;color:black"></i> </li> <div id="employee_table'+count+'" style="overflow: auto;"></div>';
-            // // }
-        
-                table_data +=  '<li  onclick="Loadcsv('+count+');">'+' <input type="checkbox" class="custom-control-input" id="customCheck">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+"          "+cell_data[12].replace(/"/g,"")+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+cell_data[6].replace(/"/g,"")+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+cell_data[8].replace(/"/g,"")+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+cell_data[16].replace(/"/g,"")+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+'<i class="fa fa-plus-circle" style="font-size:20px;color:black"></i> </li> <div id="employee_table'+count+'" style="overflow: auto;"></div>';
-                // document.getElementById("customCheck").checked = false;
-                // if(document.getElementById("customCheck").checked===true){
-                //   rowclick(i);
-                //   }
-             
-               // console.log(cell_data[8].length);
-              //  table_data += '  <td>  '+cell_data[6].replace(/"/g,"")+'</td>';
-              
-              //  table_data += '  <td>  '+cell_data[8].replace(/"/g,"")+'</td>';
-              //  table_data += '  <td>  '+cell_data[16].replace(/"/g,"")+'</td>';
-              //  table_data += '  <td>   <i class="fa fa-plus-circle" style="font-size:20px;color:black"></i> </li> <div id="employee_table'+i+'" style="overflow: auto;"></div>';
-             }
-           
-            }
-            table_data+='</ol>'
-          
-        document.getElementById('user-list'+i+'').style.height = 50+ "vh";
-         $('#user-list'+i+'').html(table_data);
-        
-       
-    }
-    function Loadcsv(i){
-         
-         if(ispaused){
-       
-     
-            var table_data1 = '<table class="table table-bordered table-striped"  > ';
-            for(var count = 0; count<2; count++)
-            {     
-                    //you will get acctual output in array
-              if(count==0){
-              cell_data = detaildata[count].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);}
-              else{
-                cell_data = detaildata[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-              }
-                  
-             table_data1 += ' <tr id="roweve"  onclick="rowclick(this)"  >  ';
-             for(var cell_count=0; cell_count<cell_data.length; cell_count++)
-             {
-              if(count === 0)
-              {
-               table_data1 += '  <th>  '+cell_data[cell_count]+'</th>';
-                 
-              }
-              
-              else{
-                table_data1 += '<td>'+cell_data[cell_count]+'</td>';
-              }
-             }
-             table_data1 += '</tr>';
-            }
-            table_data1 += '</table>';
-            
-            // for(var j=0;j<allflood.length;j++){
-          // if(i==j){
-        document.getElementById('employee_table'+i+'').style.height = 30+"vh";
-         $('#employee_table'+i+'').html(table_data1);
-      // } }
-       
-          }
-           }
-      
-      
-           
-      function rowclick(rowno){
-         
-       let msg=rowno.cells[4].innerHTML;
-       
-       var WithOutBrackets=msg.replace(/[\[\]']+/g,'');
-       var me=WithOutBrackets.replace(/"/g,"");
-               
-      //   var obj=  JSON.parse( WithOutBrackets   );
-       //alert(typeof(me));
-       //we have to do string to integer and understand about how array convert into chunk array
-      
-        var  coordinates=  me.split(',');
-        console.log( coordinates);
-      const chunk =  coordinates => {
-         const size = 2;
-         const chunkedArray = [];
-         for (let i = 0; i <  coordinates.length; i++) {
-            const last = chunkedArray[chunkedArray.length - 1];
-            if(!last || last.length === size){
-               chunkedArray.push([ coordinates[i]]);
-            }else{
-               last.push( coordinates[i]);
-            }
-         };
-         return chunkedArray;
-      };
-       
-             alert(chunk( coordinates));
-          var states = [{
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-              "type": "Polygon",
-              "coordinates":[[["129.86889616213875", "31.85092400331079"], ["130.13226059277255", "31.804015706859424"], ["130.11415527263486", "31.731335321675704"], ["129.85082873777677", "31.77787200251359"], ["129.86889616213875", "31.85092400331079"]]]
-             }
-      
-      }];
-       states[0]["geometry"]["coordinates"]=[chunk( coordinates)];
-      console.log(states);
-      L.geoJSON(states, {
-          style: function(feature) {
-              switch (feature.properties.party) {
-                  case 'Republican': return {color: "#ff0000"};
-                  case 'Democrat':   return {color: "#0000ff"};
-              }
-          }
-      }).addTo(map);
-      
+      else {
+        cell_data = detaildata[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
       }
+
+      table_data1 += ' <tr id="roweve"  onclick="rowclick(this)"  >  ';
+      for (var cell_count = 0; cell_count < cell_data.length; cell_count++) {
+        if (count === 0) {
+          table_data1 += '  <th>  ' + cell_data[cell_count] + '</th>';
+
+        }
+
+        else {
+          table_data1 += '<td>' + cell_data[cell_count] + '</td>';
+        }
+      }
+      table_data1 += '</tr>';
+    }
+    table_data1 += '</table>';
+
+    // for(var j=0;j<allflood.length;j++){
+    // if(i==j){
+    document.getElementById('employee_table' + i + '').style.height = 30 + "vh";
+    $('#employee_table' + i + '').html(table_data1);
+    // } }
+
+  }
+}
+
+
+
+function rowclick(rowno) {
+
+  let msg = rowno.cells[4].innerHTML;
+
+  var WithOutBrackets = msg.replace(/[\[\]']+/g, '');
+  var me = WithOutBrackets.replace(/"/g, "");
+
+  //   var obj=  JSON.parse( WithOutBrackets   );
+  //alert(typeof(me));
+  //we have to do string to integer and understand about how array convert into chunk array
+
+  var coordinates = me.split(',');
+  console.log(coordinates);
+  const chunk = coordinates => {
+    const size = 2;
+    const chunkedArray = [];
+    for (let i = 0; i < coordinates.length; i++) {
+      const last = chunkedArray[chunkedArray.length - 1];
+      if (!last || last.length === size) {
+        chunkedArray.push([coordinates[i]]);
+      } else {
+        last.push(coordinates[i]);
+      }
+    };
+    return chunkedArray;
+  };
+
+  alert(chunk(coordinates));
+  var states = [{
+    "type": "Feature",
+    "properties": {},
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [[["129.86889616213875", "31.85092400331079"], ["130.13226059277255", "31.804015706859424"], ["130.11415527263486", "31.731335321675704"], ["129.85082873777677", "31.77787200251359"], ["129.86889616213875", "31.85092400331079"]]]
+    }
+
+  }];
+  states[0]["geometry"]["coordinates"] = [chunk(coordinates)];
+  console.log(states);
+  L.geoJSON(states, {
+    style: function (feature) {
+      switch (feature.properties.party) {
+        case 'Republican': return { color: "#ff0000" };
+        case 'Democrat': return { color: "#0000ff" };
+      }
+    }
+  }).addTo(map);
+
+}
 // $(document).on("click", ".feature-row", function(e) {
 //   $(document).off("mouseout", ".feature-row", clearHighlight);
 //   sidebarClick(parseInt($(this).attr("id"), 10));
@@ -428,21 +417,21 @@ else if((check1 > from && check1 < to)&&(check2 > from && check2 < to)&&selectco
 //   return false;
 // });
 
-$("#nav-btn").click(function() {
+$("#nav-btn").click(function () {
   $(".navbar-collapse").collapse("toggle");
   return false;
 });
 
-$("#sidebar-toggle-btn").click(function() {
+$("#sidebar-toggle-btn").click(function () {
   animateSidebar();
   return false;
 });
 
-$("#sidebar-hide-btn").click(function() {
+$("#sidebar-hide-btn").click(function () {
   animateSidebar();
   return false;
 });
-$("#sidebar-hide-btn2").click(function() {
+$("#sidebar-hide-btn2").click(function () {
   animateSidebar();
   return false;
 });
@@ -450,7 +439,7 @@ $("#sidebar-hide-btn2").click(function() {
 function animateSidebar() {
   $("#sidebar").animate({
     width: "toggle"
-  }, 350, function() {
+  }, 350, function () {
     map.invalidateSize();
   });
 }
@@ -992,4 +981,4 @@ function animateSidebar() {
 // }
 
 
- 
+

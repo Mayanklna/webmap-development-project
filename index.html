@@ -1,188 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#000000">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Getflooddata</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Getflooddata</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
-    <!-- <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css">
+  <!-- <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css">
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css">
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">
     <link rel="stylesheet" href="assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css"> -->
-    <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/app.css">
 
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon-76.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicon-120.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon-152.png">
-    <link rel="icon" sizes="196x196" href="assets/img/favicon-196.png">
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
-  </head>
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon-152.png">
+  <link rel="icon" sizes="196x196" href="assets/img/favicon-196.png">
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+</head>
 
-  <body>
-     <div id="pano"></div>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#"><i>Flood Explorer</i></a>
-          <div class="navbar-icon-container">
-            
-            <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg white"></i></a>
-            <a href="#" class="navbar-icon pull-right visible-xs" id="sidebar-toggle-btn"><i class="fa fa-search fa-lg white"></i></a>
-          </div>
-        
+<body>
+  <div id="pano"></div>
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#"> Flood Explorer </a>
+        <div class="navbar-icon-container">
+
+          <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg white"></i></a>
+          <a href="#" class="navbar-icon pull-right visible-xs" id="sidebar-toggle-btn"><i
+              class="fa fa-search fa-lg white"></i></a>
         </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right"  >
-            
-           <li> <a href="https://twitter.com/" data-toggle="collapse" data-target=".navbar-collapse.in" id="tweet-btn" style=" color:white; text-decoration: none; "><i class="fa fa-twitter white"></i>&nbsp;&nbsp;Tweeter Tab</a></li>
-        
-          </ul>
-          <ul class="nav navbar-nav">
-             
-            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle white"></i>&nbsp;&nbsp;About</a></li>
-            <li class="dropdown">
-              <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe white"></i>&nbsp;&nbsp;Tools <b class="caret"></b></a>
-              <!-- <ul class="dropdown-menu">
+
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+
+          <li> <a href="https://twitter.com/" data-toggle="collapse" data-target=".navbar-collapse.in" id="tweet-btn"
+              style=" color:white; text-decoration: none; "><i class="fa fa-twitter white"></i>&nbsp;&nbsp;Twitter
+              Tab</a></li>
+
+        </ul>
+        <ul class="nav navbar-nav">
+
+          <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i
+                class="fa fa-question-circle white"></i>&nbsp;&nbsp;About</a></li>
+          <li class="dropdown">
+            <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i
+                class="fa fa-globe white"></i>&nbsp;&nbsp;Tools <b class="caret"></b></a>
+            <!-- <ul class="dropdown-menu">
                 <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Zoom To Full Extent</a></li>
                 <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="legend-btn"><i class="fa fa-picture-o"></i>&nbsp;&nbsp;Show Legend</a></li>
                 <li class="divider hidden-xs"></li>
                 <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Login</a></li>
               </ul> -->
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-cloud-download white"></i>&nbsp;&nbsp;Download <b class="caret"></b></a>
-                <!-- <ul class="dropdown-menu">
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i
+                class="fa fa-cloud-download white"></i>&nbsp;&nbsp;Download <b class="caret"></b></a>
+            <!-- <ul class="dropdown-menu">
                   <li><a href="data/boroughs.geojson" download="boroughs.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Boroughs</a></li>
                   <li><a href="data/subways.geojson" download="subways.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Subway Lines</a></li>
                   <li><a href="data/DOITT_THEATER_01_13SEPT2010.geojson" download="theaters.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Theaters</a></li>
                   <li><a href="data/DOITT_MUSEUM_01_13SEPT2010.geojson" download="museums.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Museums</a></li>
                 </ul> -->
-            </li>
-            <li  ><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="sidebar-hide-btn2"><i class="fa fa-list white"></i>&nbsp;&nbsp;Query Data</a></li>
-          </ul>
-        </div><!--/.navbar-collapse -->
+          </li>
+          <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="sidebar-hide-btn2"><i
+                class="fa fa-list white"></i>&nbsp;&nbsp;Query Data</a></li>
+        </ul>
+      </div>
+      <!--/.navbar-collapse -->
+    </div>
+  </div>
+  <div id="loading">
+    <div class="loading-indicator">
+      <div class="progress progress-striped active" style="width:auto">
+        <div class="progress-bar progress-bar-striped progress-bar-full"></div>
       </div>
     </div>
-    <div id="loading">
-      <div class="loading-indicator">
-        <div class="progress progress-striped active" style="width:auto">
-          <div class="progress-bar progress-bar-striped progress-bar-full"  ></div>
-        </div>
-      </div>
-    </div> 
-    
-    <div id="container">
-    
-      <div id="sidebar">
-        <div class="sidebar-wrapper">
-          <div class="panel panel-default" id="features">
-            <div class="panel-heading">
-              <h3 class="panel-title">Search Flood Data
-              <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
-            </div>
-            <div class="panel-body">
-              <div class="column">
-                <div class="col-xs-8 col-md-8">
-                  <div id="Start" > <form  >
-                    <label for="start-date">Flood Start date</label><br>
-                    <input type="date" id="startdate" name="birthday">
-                    
-                  </form></div>   
-                <div id="End"  style="margin-top:0.3125rem;">   <form action="/action_page.php">
-                    <label for="end-date">Flood End date</label><br>
-                    <input type="date" id="enddate" name="birthday">
-                </form>
+  </div>
+
+  <div id="container">
+
+    <div id="sidebar">
+      <div class="sidebar-wrapper">
+        <div class="panel panel-default" id="features">
+          <div class="panel-heading">
+            <h3 class="panel-title">Search Flood Data
+              <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i
+                  class="fa fa-chevron-left"></i></button>
+            </h3>
+          </div>
+          <div class="panel-body">
+
+            <div class="column">
+              <div class="col-xs-8 col-md-8">
+                <div id="Start">
+                  <label for="start-date">Flood Start date</label><br>
+                  <input type="date" id="startdate" name="birthday">
+
+                </div>
+                <div id="End" style="margin-top:0.3125rem;">
+                  <label for="end-date">Flood End date</label><br>
+                  <input type="date" id="enddate" name="birthday">
+
+                </div>
+
+                <div class="dropdown" id="Countrydrop" style="margin-top:0.3125rem;">
+
+                  <label for="cars">Country</label><br>
+
+                  <select id="countries" name="countries">
+                    <option value="India">India</option>
+                    <option value="Indonesia">Indonesia</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Laos">Laos</option>
+                    <option value="Thailand">Thailand</option>
+                  </select>
+
+
+                </div>
+
+                <div id="satellites" style="margin-top:0.3125rem;">
+
+                  <div style="width: 240px;">
+                    <label>Optical Satellite Sensors</label><br>
+                    <input type="checkbox" id="planet" name="planet" value="Planet">
+                    Planet <br>
+                    <input type="checkbox" id="digital" name="digital" value="Digital Globe">
+                    Digital Globe <br>
+                    <input type="checkbox" id="sentinel2" name="sentinal2" value="Sentinel-II">
+                    Sentinel-II
                   </div>
-                   
-                  <div class="dropdown" id="Countrydrop"  style="margin-top:0.3125rem;">
-                    <form action="/action_page.php">
-                      <label for="cars">Country</label>
-                      
-                      <select id="countries" name="countries">
-                        <option value="India">India</option>
-                        <option value="Indonesia">Indonesia</option>
-                        <option value="Japan">Japan</option>
-                        <option value="Laos">Laos</option>
-                        <option value="Thailand">Thailand</option>
-                      </select>
-                  </form>   
-                     
+                  <div style="width: 240px;">
+                    <label>SAR Satellite Sensors</label><br>
+
+                    <input type="checkbox" id="alos2" name="also2" value="ALOS-II">
+                    ALOS-II <br>
+                    <input type="checkbox" id="sentinel1" name="sentinel1" value="Sentinel-I">
+                    Sentinel-I
                   </div>
-                  
-                  <div id="satellites"  style="margin-top:0.3125rem;"> 
-                        
-                    <form action="/action_page.php"  style="width: 240px;">
-                        <label>Optical Satellite Sensors</label><br>
-                        <input type="checkbox" id="planet" name="planet" value="Planet">
-                        Planet   <br>
-                        <input type="checkbox" id="digital" name="digital" value="Digital Globe">
-                        Digital Globe <br>
-                       <input type="checkbox" id="sentinal2" name="sentinal2" value="Sentinal-II">
-                        Sentinal-II 
-                      </form>
-                      <form action="/action_page.php"  style="width: 240px;">
-                        <label>SAR Satellite Sensors</label><br>
-                       
-                        <input type="checkbox" id="alos2" name="also2" value="ALOS-II">
-                        ALOS-II <br>
-                       <input type="checkbox" id="sentinal1" name="sentinal1" value="Sentinal-I">
-                        Sentinal-I 
-                      </form>
-                    </div>   
-                    <div id="submitbutton"  > 
-                      <button type="button" onclick="getVal();" class="button button1"  >Submit</button> 
-                     <!-- <button type="button" onclick="getVal();"  class="btn btn-primary">
+                </div>
+                <div id="submitbutton">
+                  <button type="submit" onclick="getVal();" class="button button1">Submit</button>
+                  <!-- <button type="button" onclick="getVal();"  class="btn btn-primary">
                         <font color="white"> Submit</font>
                      </button> -->
-                    </div>    
-                      </div>
-                
+                </div>
               </div>
+
             </div>
-            <div class="panel-heading" id="panel-heading">
-              <h3 class="panel-title">Satellite Sensors Data
-              </h3>
+
+          </div>
+          <div class="panel-heading" id="panel-heading">
+            <h3 class="panel-title">Satellite Sensors Data
+            </h3>
+          </div>
+
+
+          <div class="alldata">
+            <div class="flooddataclass">
+              <h3 class="panel-title" id="opticaldata">Optical Satellite Sensors</h3>
+              <ul class="list-group" id="feature-list1"></ul>
+              <h3 class="panel-title" id="sardata">SAR Satellite Sensors</h3>
+              <ul class="list-group" id="feature-list2"></ul>
+              <h3 class="panel-title" id="weblink">Floodlist Weblinks</h3>
+              <ul class="list-group" id="feature-list3"></ul>
             </div>
-            
-            <div class="opticalorsar"  >
-              <div  id="opticalorsardata"></div> 
-              <div class ="flooddataclass"  >
-       
-                <ul class="list-group" id="feature-list">   </ul>
-                
-               </div>
-            </div>
-            <div class="optical"  >
-              <div   id="opticaldata"></div> 
-              <div class ="flooddataclass1"  >
-       
-                <ul class="list-group" id="feature-list1">   </ul>
-                
-               </div>
-            </div>
-            <div class="sar"  >
-              <div   id="sardata"></div> 
-              <div class ="flooddataclass2"  >
-       
-                <ul class="list-group" id="feature-list2">   </ul>
-                
-               </div>
-            </div>
-         
-            <!-- <div class="sidebar-table">
+          </div>
+
+
+          <!-- <div class="sidebar-table">
              
               <table class="table table-hover" id="feature-list">
                 <thead class="hidden">
@@ -199,15 +200,15 @@
                 <tbody class="list"></tbody>
               </table>
             </div> -->
-          </div>
         </div>
       </div>
-      <div id="map"></div>
     </div>
-    
+    <div id="map"></div>
+  </div>
 
 
-    <!-- <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog">
+
+  <!-- <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -296,11 +297,11 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div> -->
-        <!-- </div>/.modal-content -->
-      <!-- </div>/.modal-dialog -->
-    <!-- </div>/.modal -->
+  <!-- </div>/.modal-content -->
+  <!-- </div>/.modal-dialog -->
+  <!-- </div>/.modal -->
 
-    <!-- <div class="modal fade" id="legendModal" tabindex="-1" role="dialog">
+  <!-- <div class="modal fade" id="legendModal" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -313,11 +314,11 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div> -->
-        <!-- </div>/.modal-content -->
-      <!-- </div>/.modal-dialog -->
-    <!-- </div>/.modal -->
+  <!-- </div>/.modal-content -->
+  <!-- </div>/.modal-dialog -->
+  <!-- </div>/.modal -->
 
-    <!-- <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
+  <!-- <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
@@ -346,7 +347,7 @@
       </div>  /.modal-dialog  
     </div>  /.modal -->
 
-    <!-- <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
+  <!-- <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -357,11 +358,11 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div> -->
-        <!-- </div>/.modal-content -->
-      <!-- </div>/.modal-dialog -->
-    <!-- </div>/.modal -->
+  <!-- </div>/.modal-content -->
+  <!-- </div>/.modal-dialog -->
+  <!-- </div>/.modal -->
 
-    <!-- <div class="modal fade" id="attributionModal" tabindex="-1" role="dialog">
+  <!-- <div class="modal fade" id="attributionModal" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -371,10 +372,10 @@
           <div class="modal-body">
             <div id="attribution"></div>
           </div> -->
-        <!-- </div>/.modal-content -->
-      <!-- </div>/.modal-dialog -->
-    <!-- </div>/.modal --> 
-<!-- 
+  <!-- </div>/.modal-content -->
+  <!-- </div>/.modal-dialog -->
+  <!-- </div>/.modal -->
+  <!-- 
     
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.min.js"></script>
@@ -385,15 +386,15 @@
     <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
     <script src="assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js"></script> -->
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-     
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
-    <script src="assets/js/app.js"></script>
-  </body>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
- 
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+  <script src="assets/js/app.js"></script>
+</body>
+
+
 </html>
 
 
