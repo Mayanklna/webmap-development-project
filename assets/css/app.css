@@ -35,13 +35,13 @@ input[type="radio"], input[type="checkbox"] {
  
 ::-webkit-scrollbar {
   width: 1px;
-  height: 3px;
+  height: 5px;
   border-left: 0;
   background: #D0D3D4;
 }
 ::-webkit-scrollbar-thumb {
-  background:  #000000;
-  border-radius: 10;
+  background:  rgb(150, 147, 147);
+  border-radius: 30;
 }
 #map {
   width: auto;
@@ -79,11 +79,13 @@ input[type="radio"], input[type="checkbox"] {
 }
 .panel-heading{
   width: 300px;
+  background-color:#6495ED;
 }
-#panel-heading2{
+/* #panel-heading2{
   width: 300px;
   height: 0px;
-}
+  background-color:#6495ED;
+} */
 .panel-body{
   width: 300px;
  
@@ -98,22 +100,28 @@ input[type="radio"], input[type="checkbox"] {
   position: relative;
   
 }
- 
+#panelbefore{
+  margin-bottom: 0px;
+  background-color:#6495ED;
+  color: white;
+  padding:11px;
+}
 #opticaldata{
   margin-bottom: 0px;
-  background-color:#F0F3F4;  
+  background-color:#6495ED;
+  color: white;
   padding:11px;
 }
 #sardata{
   margin-bottom: 0px;
-  font-style: bold;
-  background-color:#F0F3F4 ;
+  color: white;
+  background-color:#6495ED;
   padding:11px;  
 }
 #weblink{
   margin-bottom: 0px;
-  
-  background-color:#F0F3F4 ;
+  color: white;
+  background-color:#6495ED;
   padding:11px;
 }
 .flooddataclass{
@@ -121,6 +129,7 @@ input[type="radio"], input[type="checkbox"] {
   position: relative;
   width:100% ;
   margin: 0;
+  font-size: 13.5px;
 }
  
  
@@ -212,8 +221,51 @@ input[type="radio"], input[type="checkbox"] {
   background-color: #ECF0F1;
     
 }
-
-
+.planet_table{
+  display:table;width:900px;font-size:10px;
+}
+.sentinel2_table{
+  display:table;width:1800px;font-size:10px;
+}
+.sentinel2_table #planet_head_row:hover{
+  background-color:#6495ED;
+}
+.sentinel1_table{
+  display:table;width:1000px;font-size:10px;
+}
+.sentinel1_table #planet_head_row:hover{
+  background-color: #6495ED;
+}
+.planet_table #planet_head_row:hover{
+  background-color: #6495ED;
+}
+.planet_head_row{
+  display:table-row;
+   
+}
+.planet_header_row{
+  display:table-row;
+  color: blue;
+  background-color: #ccc;
+}
+.planet_head_cell{
+  display:table-cell;padding:5px;
+ 
+}
+.details_planet{
+  display:table-row;
+  width:900px;
+  font-size:10px;margin: 0;
+  background-color: rgb(243, 243, 243);
+}
+.details_sar{
+  display:table-row;
+  width:1300px;
+  font-size:10px;margin: 0;
+  background-color: rgb(243, 243, 243);
+}
+ 
+ 
 .leaflet-control-layers {
   overflow: auto;
 }

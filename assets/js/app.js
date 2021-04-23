@@ -15,7 +15,7 @@ var country;
 var s1, s2, s3, s4, s5, d1, d2, c1, c2;
 var datacheck;
 var satellites;
- 
+
 var flooddatasearch;
 var csvflooddata;
 var ispaused = false;
@@ -24,8 +24,11 @@ var startdate;
 var enddate;
 var setstart;
 var setend;
-var allflooddata1 = [];
-var allflooddata2 = [];
+var allopticaldata = [];
+var allsardata = [];
+
+var rowallflooddata1 = [];
+var rowallflooddata2 = [];
 var requireddata1 = [];
 var requireddata2 = [];
 var requiredweblink = [];
@@ -88,7 +91,8 @@ function formatDate(input) {
   return day + '/' + month + '/' + year;
 }
 function getVal() {
-
+  allopticaldata.splice(0, allopticaldata.length);
+  allsardata.splice(0, allsardata.length);
   s1 = "";
   s2 = "";
   s3 = "";
@@ -97,7 +101,7 @@ function getVal() {
   document.getElementById('feature-list1').innerHTML = "";
   document.getElementById('feature-list2').innerHTML = "";
   document.getElementById('feature-list3').innerHTML = "";
-  $("#panel-heading").hide();
+  $("#panelbefore").hide();
 
   var x = document.getElementById("startdate").value
   var y = document.getElementById("enddate").value
@@ -175,17 +179,16 @@ function getVal() {
 
     if ((check1 > from && check1 < to) && (check2 > from && check2 < to) && (selectcountry === country) && (s1 === satellites || s3 === satellites || s4 === satellites) && (s2 !== satellites || s5 != satellites)) {
       $("#opticaldata").show();
-
       requireddata1.push(actualdata[j]["flooddata"]);
-      allflooddata1.push(actualdata[j]["flooddata"]);
       floodname1.push("Flood data-" + country + " from " + startdate + " to " + enddate + " " + satellites + " data");
+      allopticaldata.push(actualdata[j]);
 
     }
     else if ((check1 > from && check1 < to) && (check2 > from && check2 < to) && selectcountry === country && (s2 === satellites || s5 === satellites) && (s1 != satellites || s3 != satellites || s4 != satellites)) {
       $("#sardata").show();
 
       requireddata2.push(actualdata[j]["flooddata"]);
-      allflooddata2.push(actualdata[j]["flooddata"]);
+      allsardata.push(actualdata[j]);
       floodname2.push("Flood data-" + country + " from " + startdate + " to " + enddate + " " + satellites + " data");
 
     }
@@ -199,16 +202,18 @@ function getVal() {
     $("#sardata").hide();
   }
   if ((document.getElementById("planet").checked === false) && (document.getElementById("sentinel2").checked === false) && (document.getElementById("digital").checked === false) && (document.getElementById("sentinel1").checked === false) && (document.getElementById("alos2").checked === false) && (weblinkdata.length === 0)) {
-    $("#panel-heading").show();
+    $("#panelbefore").show();
     $("#opticaldata").hide();
     $("#sardata").hide();
     alert("please select any sensor");
   }
+  console.log(allopticaldata);
+  console.log(allsardata);
 
-  console.log(requiredweblink);
-  console.log(requireddata1);
-  console.log(requireddata2);
-   
+  // console.log(requiredweblink);
+  // console.log(requireddata1);
+  // console.log(requireddata2);
+
   if (requiredweblink.length != 0) {
     var text = "";
     for (var i = 0; i < requiredweblink.length; i++) {
@@ -227,7 +232,7 @@ function getVal() {
     for (var i = 0; i < requireddata1.length; i++) {
 
       // if(i>0){text=text+"<hr style='height:1px;border-width:0px;color:gray;background-color:gray'/>";}  
-      text1 = text1 + "<li name='load_data' id='#load_data'  onclick='usershowtable(" + i + "," + actualdata[i][0]["Latitude"] + ");'><img width='16' height='18' src='assets/img/flood.png'>" + floodname1[i] + "</li><div id='user-list" + i + "' style='overflow: auto;'></div>";
+      text1 = text1 + "<li name='load_data' id='#load_data'  onclick='usershowtable1(" + i + ");'><img width='16' height='18' src='assets/img/flood.png'>" + floodname1[i] + "</li><div id='optical-list" + i + "' style='overflow: auto;'></div>";
 
 
     }
@@ -236,12 +241,12 @@ function getVal() {
 
   }
   if (requireddata2.length != 0) {
-      
+
     var text2 = "";
     for (var i = 0; i < requireddata2.length; i++) {
 
       // if(i>0){text=text+"<hr style='height:1px;border-width:0px;color:gray;background-color:gray'/>";}  
-      text2 = text2 + "<li name='load_data' id='#load_data'  onclick='usershowtable1(" + i + "," + requireddata2[i][0][""] + ");'><img width='16' height='18' src='assets/img/flood.png'>" + floodname2[i] + "</li><div id='user-list" + i + "' style='overflow: auto;'></div>";
+      text2 = text2 + "<li name='load_data' id='#load_data'  onclick='usershowtable2(" + i + ");'><img width='16' height='18' src='assets/img/flood.png'>" + floodname2[i] + "</li><div id='sar-list" + i + "'style='overflow: auto;'></div>";
 
 
     }
@@ -253,82 +258,160 @@ function getVal() {
   floodname1.splice(0, floodname1.length);
   floodname2.splice(0, floodname2.length);
 }
-function flytoloaction1(i) {
-  
-  map.flyTo([allflooddata1[i][0]["Latitude"], allflooddata1[i][0]["Longitude"]], 8, {
+function flyforoptical(i) {
+
+  map.flyTo([allopticaldata[i]["flooddata"][0]["Latitude"], allopticaldata[i]["flooddata"][0]["Longitude"]], 8, {
     duration: 3
   })
-  var a = allflooddata1[i][0]["Latitude"];
-  var b = allflooddata1[i][0]["Longitude"];
+  var a = parseFloat(allopticaldata[i]["flooddata"][0]["Latitude"]);
+  var b = parseFloat(allopticaldata[i]["flooddata"][0]["Longitude"]);
+
   var x = a - 1
   var y = a + 1
   var x1 = b - 1
   var y1 = b + 1
 
   var latlngs = [[x, x1], [x, y1], [y, y1], [y, x1], [x, x1]];
+  console.log(latlngs);
   var polygon = L.polygon(latlngs, { color: 'red' }).addTo(map);
-    
+
   // // zoom the map to the polygon
   // map.fitBounds(polygon.getBounds());
 }
 
+function flyforsar(i) {
+
+  map.flyTo([allsardata[i]["flooddata"][0]["Latitude"], allsardata[i]["flooddata"][0]["Longitude"]], 8, {
+    duration: 3
+  })
+  var a = parseFloat(allsardata[i]["flooddata"][0]["Latitude"]);
+  var b = parseFloat(allsardata[i]["flooddata"][0]["Longitude"]);
+
+  var x = a - 1
+  var y = a + 1
+  var x1 = b - 1
+  var y1 = b + 1
+
+  var latlngs = [[x, x1], [x, y1], [y, y1], [y, x1], [x, x1]];
+  console.log(latlngs);
+  var polygon = L.polygon(latlngs, { color: 'red' }).addTo(map);
+
+  // // zoom the map to the polygon
+  // map.fitBounds(polygon.getBounds());
+}
+
+
 function usershowtable1(i) {
 
-  flytoloaction1(i);
-   var table_data=""
 
 
-   
-    
-      
-  document.getElementById('user-list'+i+'').style.height = 50+ "vh";
-         $('#user-list'+i+'').html(table_data); 
+  if ((allopticaldata[i]["SatelliteName"] === s1)) {
+    flyforoptical(i);
+    rowallflooddata1 = allopticaldata[i]["flooddata"];
+    var table_data = "<div class='planet_table'  ><div class='planet_header_row' id='planet_header_row'  ><div class='planet_head_cell'><strong>AOI</strong></div><div class='planet_head_cell'><strong>Sensor</strong></div><div class='planet_head_cell'><strong>Acquired</strong></div><div class='planet_head_cell'><strong>Cloud Cover</strong></div><div class='planet_head_cell'><strong>Provider</strong></div><div class='planet_head_cell'><strong>Pixel Resolution</strong></div><div class='planet_head_cell'><strong>Details</strong></div></div>";
+    for (var j = 0; j < allopticaldata[i]["flooddata"].length; j++) {
+      table_data += "<div class='planet_head_row' id='planet_head_row' ><div class='planet_head_cell' ><input type='checkbox' class='custom-control-input' value=false onclick='rowclickoptical(" + j + ");' id='customCheck'></div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["instrument"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["acquired"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["cloud_cover"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["provider"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["pixel_resolution"] + "</div><div  class='planet_head_cell'><i class='fa fa-plus-circle' onclick='detailsoptical(" + i + "," + j + ");' style='font-size:20px;color:black'></i> </div></div><div class='details_planet' id='details_planet" + i + "" + j + "'></div>";
+
+
+
+    }
+    table_data += "</div>";
+    document.getElementById('optical-list' + i + '').style.height = 50 + "vh";
+    $('#optical-list' + i + '').html(table_data);
+  }
+
+  if ((allopticaldata[i]["SatelliteName"] === s3)) {
+    flyforoptical(i);
+    rowallflooddata1 = allopticaldata[i]["flooddata"];
+
+    var table_data = "<div class='sentinel2_table'  ><div class='planet_header_row' id='planet_header_row'  ><div class='planet_head_cell'><strong>AOI</strong></div><div class='planet_head_cell'><strong>Title</strong></div><div class='planet_head_cell'><strong>Summary</strong></div><div class='planet_head_cell'><strong>Ingestion_date</strong></div><div class='planet_head_cell'><strong>Begin_position</strong></div><div class='planet_head_cell'><strong>End_position</strong></div><div class='planet_head_cell'><strong>Cloudcoverpercentage</strong></div><div class='planet_head_cell'><strong>Details</strong></div></div>";
+    for (var j = 0; j < allopticaldata[i]["flooddata"].length; j++) {
+      table_data += "<div class='planet_head_row' id='planet_head_row' ><div class='planet_head_cell' ><input type='checkbox' class='custom-control-input' value=false onclick='rowclickoptical(" + j + ");' id='customCheck'></div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["title"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["summary"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["ingestiondate"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["beginposition"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["endposition"] + "</div><div class='planet_head_cell'>" + allopticaldata[i]["flooddata"][j]["cloudcoverpercentage"] + "</div><div  class='planet_head_cell'><i class='fa fa-plus-circle' onclick='detailsoptical(" + i + "," + j + ");' style='font-size:20px;color:black'></i> </div></div><div class='details_planet' id='details_planet" + i + "" + j + "'></div>";
+
+    }
+    table_data += "</div>";
+    document.getElementById('optical-list' + i + '').style.height = 50 + "vh";
+    $('#optical-list' + i + '').html(table_data);
+  }
 
 }
-function Loadcsv(i) {
-
-  if (ispaused) {
+function usershowtable2(i) {
 
 
-    var table_data1 = '<table class="table table-bordered table-striped"  > ';
-    for (var count = 0; count < 2; count++) {
-      //you will get acctual output in array
-      if (count == 0) {
-        cell_data = detaildata[count].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-      }
-      else {
-        cell_data = detaildata[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-      }
 
-      table_data1 += ' <tr id="roweve"  onclick="rowclick(this)"  >  ';
-      for (var cell_count = 0; cell_count < cell_data.length; cell_count++) {
-        if (count === 0) {
-          table_data1 += '  <th>  ' + cell_data[cell_count] + '</th>';
+  if ((allsardata[i]["SatelliteName"] === s2)) {
+    flyforsar(i);
+    rowallflooddata2 = allsardata[i]["flooddata"];
+    var table_data = "<div class='sentinel1_table'  ><div class='planet_header_row' id='planet_header_row'  ><div class='planet_head_cell'><strong>AOI</strong></div><div class='planet_head_cell'><strong>Product Type</strong></div><div class='planet_head_cell'><strong>Orbit_number</strong></div><div class='planet_head_cell'><strong>Mode</strong></div><div class='planet_head_cell'><strong>Orbit_direction</strong></div><div class='planet_head_cell'><strong>Summary</strong></div><div class='planet_head_cell'><strong>Details</strong></div></div>";
+    for (var j = 0; j < allsardata[i]["flooddata"].length; j++) {
+      table_data += "<div class='planet_head_row' id='planet_head_row' ><div class='planet_head_cell' ><input type='checkbox' class='custom-control-input' value=false onclick='rowclicksar(" + j + ");' id='customCheck'></div><div class='planet_head_cell'>" + allsardata[i]["flooddata"][j]["producttype"] + "</div><div class='planet_head_cell'>" + allsardata[i]["flooddata"][j]["orbitnumber"] + "</div><div class='planet_head_cell'>" + allsardata[i]["flooddata"][j]["sensoroperationalmode"] + "</div><div class='planet_head_cell'>" + allsardata[i]["flooddata"][j]["orbitdirection"] + "</div><div class='planet_head_cell'>" + allsardata[i]["flooddata"][j]["summary"]+ "</div><div  class='planet_head_cell'><i class='fa fa-plus-circle' onclick='detailssar(" + i + "," + j + ");' style='font-size:20px;color:black'></i> </div></div><div class='details_planet' id='details_sar" + i + "" + j + "'></div>";
 
-        }
 
-        else {
-          table_data1 += '<td>' + cell_data[cell_count] + '</td>';
-        }
-      }
-      table_data1 += '</tr>';
+
     }
-    table_data1 += '</table>';
+    table_data += "</div>";
+    document.getElementById('sar-list' + i + '').style.height = 50 + "vh";
+    $('#sar-list' + i + '').html(table_data);
+  }
 
-    // for(var j=0;j<allflood.length;j++){
-    // if(i==j){
-    document.getElementById('employee_table' + i + '').style.height = 30 + "vh";
-    $('#employee_table' + i + '').html(table_data1);
-    // } }
 
+}
+function detailsoptical(i, j) {
+
+  if ((allopticaldata[i]["SatelliteName"] === s1)) {
+
+
+    var table_data = "<div  class='planet_head_cell'><b>Central lat:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["Latitude"]) + "<br><br><b>Central long:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["Longitude"]) + "</div>";
+
+    table_data += "<div  class='planet_head_cell'><b>Origin x:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["origin_x"]) + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Origin y:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["origin_y"]) + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Footprint:</b>" + allopticaldata[i]["flooddata"][j]["footprint"] + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>AOI Geojson:</b>" + allopticaldata[i]["flooddata"][j]["complete_geojson_geometry"] + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Image_Id:</b>" + allopticaldata[i]["flooddata"][j]["image id"] + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>GSD:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["gsd"]) + "</div>";
+
+    $('#details_planet' + i + "" + j + '').html(table_data);
+  }
+   
+  if ((allopticaldata[i]["SatelliteName"] === s3)) {
+    
+    var table_data =  "<div  class='planet_head_cell'><b>Central lat:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["Latitude"]) + "<br><br><b>Central long:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["Longitude"]) + "</div>";
+    table_data +=  "<div  class='planet_head_cell'><b>Footprint:</b>" + allopticaldata[i]["flooddata"][j]["footprint"] + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Link:</b>" +  allopticaldata[i]["flooddata"][j]["link"]  + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Orbitnumber:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["orbitnumber"]) + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Relativeorbitnumber:</b>" + parseFloat(allopticaldata[i]["flooddata"][j]["relativeorbitnumber"]) + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Filename:</b>" + allopticaldata[i]["flooddata"][j]["filename"] + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Processinglevel:</b>" + allopticaldata[i]["flooddata"][j]["processinglevel"] + "</div>";
+    table_data += "<div  class='planet_head_cell'></div>";
+    
+
+    $('#details_planet' + i + "" + j + '').html(table_data);
+    
+  }
+}
+function detailssar(i, j) {
+
+   
+  if ((allsardata[i]["SatelliteName"] === s2)) {
+    
+    var table_data =  "<div  class='planet_head_cell'><b>Central lat:</b>" + parseFloat(allsardata[i]["flooddata"][j]["Latitude"]) + "<br><br><b>Central long:</b>" + parseFloat(allsardata[i]["flooddata"][j]["Longitude"]) + "</div>";
+    table_data +=  "<div  class='planet_head_cell'><b>Footprint:</b>" + allsardata[i]["flooddata"][j]["footprint"] + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Link:</b>" +  allsardata[i]["flooddata"][j]["link"]  + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>UUID:</b>" +  allsardata[i]["flooddata"][j]["uuid"] + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Relativeorbitnumber:</b>" + parseFloat(allsardata[i]["flooddata"][j]["relativeorbitnumber"]) + "</div>";
+    table_data += "<div  class='planet_head_cell'><b>Filename:</b>" + allsardata[i]["flooddata"][j]["filename"] + "</div>";
+    table_data += "<div  class='planet_head_cell'></div>";
+    
+
+    $('#details_sar' + i + "" + j + '').html(table_data);
+    
   }
 }
 
+function rowclickoptical(rowno) {
 
-
-function rowclick(rowno) {
-
-  let msg = rowno.cells[4].innerHTML;
+  let msg = rowallflooddata1[rowno]["footprint"];
+  console.log(msg);
 
   var WithOutBrackets = msg.replace(/[\[\]']+/g, '');
   var me = WithOutBrackets.replace(/"/g, "");
@@ -353,7 +436,7 @@ function rowclick(rowno) {
     return chunkedArray;
   };
 
-  alert(chunk(coordinates));
+  // alert(chunk(coordinates));
   var states = [{
     "type": "Feature",
     "properties": {},
@@ -375,6 +458,57 @@ function rowclick(rowno) {
   }).addTo(map);
 
 }
+function rowclicksar(rowno) {
+
+  let msg = rowallflooddata2[rowno]["footprint"];
+  console.log(msg);
+
+  var WithOutBrackets = msg.replace(/[\[\]']+/g, '');
+  var me = WithOutBrackets.replace(/"/g, "");
+
+  //   var obj=  JSON.parse( WithOutBrackets   );
+  //alert(typeof(me));
+  //we have to do string to integer and understand about how array convert into chunk array
+
+  var coordinates = me.split(',');
+  console.log(coordinates);
+  const chunk = coordinates => {
+    const size = 2;
+    const chunkedArray = [];
+    for (let i = 0; i < coordinates.length; i++) {
+      const last = chunkedArray[chunkedArray.length - 1];
+      if (!last || last.length === size) {
+        chunkedArray.push([coordinates[i]]);
+      } else {
+        last.push(coordinates[i]);
+      }
+    };
+    return chunkedArray;
+  };
+
+  // alert(chunk(coordinates));
+  var states = [{
+    "type": "Feature",
+    "properties": {},
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [[["129.86889616213875", "31.85092400331079"], ["130.13226059277255", "31.804015706859424"], ["130.11415527263486", "31.731335321675704"], ["129.85082873777677", "31.77787200251359"], ["129.86889616213875", "31.85092400331079"]]]
+    }
+
+  }];
+  states[0]["geometry"]["coordinates"] = [chunk(coordinates)];
+  console.log(states);
+  L.geoJSON(states, {
+    style: function (feature) {
+      switch (feature.properties.party) {
+        case 'Republican': return { color: "#ff0000" };
+        case 'Democrat': return { color: "#0000ff" };
+      }
+    }
+  }).addTo(map);
+
+}
+
 // $(document).on("click", ".feature-row", function(e) {
 //   $(document).off("mouseout", ".feature-row", clearHighlight);
 //   sidebarClick(parseInt($(this).attr("id"), 10));
