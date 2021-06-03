@@ -14,10 +14,9 @@
 }
 body {
   padding-top: 50px;
-  font-family: 'Courgette', cursive;
-  font-family: 'Dancing Script', cursive;
-  font-family: 'Lobster Two', cursive;
-  font-family: 'Satisfy', cursive;
+ 
+font-family: 'Open Sans', sans-serif;
+font-family: 'Satisfy', cursive;
  
 }
 input[type="radio"], input[type="checkbox"] {
@@ -31,17 +30,77 @@ input[type="radio"], input[type="checkbox"] {
   float: left;
   overflow: auto;
 }
-
+#sidebar-tweet {
+  display: block;
+  width: 100%;
+  height: 100%;
+  
  
+  overflow: auto;
+}
+
+table{
+  border-spacing: 0px;
+  width: 100%;
+ 
+}
+
+.table td, .table th{
+  padding: .75em;
+  vertical-align: top;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.table td > a.btn{
+  padding: .3em 1em;
+  font-size: 1.1em;
+  margin: 0 .2em;
+}
+
+.table tr:hover{
+  background-color:#6495ED ;
+}
+
+.table tr:hover td > a{
+  box-shadow: none;
+}
+
+.table .thead-dark th{
+  color: #fff;
+  background-color: #000000 ;
+  border-color: #32383e;
+}
+
+@media only screen and (max-width: 1024px){
+  table, thead, tbody, th, td, tr{
+      display: block;
+  }
+
+  thead tr{
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+  }
+
+  tr { border: 1px solid var(--border);}
+
+  td{
+      border: none;
+      position: relative;
+  }
+
+}
+
 ::-webkit-scrollbar {
   width: 1px;
-  height: 5px;
+  height: 7px;
   border-left: 0;
   background: #D0D3D4;
 }
 ::-webkit-scrollbar-thumb {
   background:  rgb(150, 147, 147);
-  border-radius: 30;
+  border-radius: 70;
 }
 #map {
   width: auto;
@@ -79,7 +138,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 .panel-heading{
   width: 300px;
-  background-color:#6495ED;
+  background-color:#000000;
 }
 /* #panel-heading2{
   width: 300px;
@@ -102,26 +161,26 @@ input[type="radio"], input[type="checkbox"] {
 }
 #panelbefore{
   margin-bottom: 0px;
-  background-color:#6495ED;
+  background-color:#000000;
   color: white;
   padding:11px;
 }
 #opticaldata{
   margin-bottom: 0px;
-  background-color:#6495ED;
+  background-color:#000000;
   color: white;
   padding:11px;
 }
 #sardata{
   margin-bottom: 0px;
   color: white;
-  background-color:#6495ED;
+  background-color:#000000;
   padding:11px;  
 }
 #weblink{
   margin-bottom: 0px;
   color: white;
-  background-color:#6495ED;
+  background-color:#000000;
   padding:11px;
 }
 .flooddataclass{
@@ -130,6 +189,9 @@ input[type="radio"], input[type="checkbox"] {
   width:100% ;
   margin: 0;
   font-size: 13.5px;
+}
+#tab{
+  text-align: center;
 }
  
  
@@ -228,16 +290,16 @@ input[type="radio"], input[type="checkbox"] {
   display:table;width:1800px;font-size:10px;
 }
 .sentinel2_table #planet_head_row:hover{
-  background-color:#6495ED;
+  background-color:#d7dadf ;
 }
 .sentinel1_table{
   display:table;width:1000px;font-size:10px;
 }
 .sentinel1_table #planet_head_row:hover{
-  background-color: #6495ED;
+  background-color:#d7dadf ;
 }
 .planet_table #planet_head_row:hover{
-  background-color: #6495ED;
+    background-color:#d7dadf ;
 }
 .planet_head_row{
   display:table-row;
@@ -245,8 +307,8 @@ input[type="radio"], input[type="checkbox"] {
 }
 .planet_header_row{
   display:table-row;
-  color: blue;
-  background-color: #ccc;
+  color: #FFFFFF;
+  background-color: #000000;
 }
 .planet_head_cell{
   display:table-cell;padding:5px;
@@ -256,13 +318,13 @@ input[type="radio"], input[type="checkbox"] {
   display:table-row;
   width:900px;
   font-size:10px;margin: 0;
-  background-color: rgb(243, 243, 243);
+  background-color: rgba(243, 243, 243, 0.925);
 }
 .details_sar{
   display:table-row;
   width:1300px;
   font-size:10px;margin: 0;
-  background-color: rgb(243, 243, 243);
+  background-color:  rgba(243, 243, 243, 0.925);
 }
  
  
@@ -412,3 +474,12 @@ input[type="radio"], input[type="checkbox"] {
   }
 }
  
+ 
+#header nav{
+  background-color: #000000;
+  padding: 0.5em 0;
+  color: #FFFFFF;
+  width: 100%;
+  margin: 0;
+  font-size: 3rem;
+}
