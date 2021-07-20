@@ -109,6 +109,9 @@
   </div>
   </div>
   </div>
+  <div id="graph">
+    <canvas id="canvas"> </canvas>
+  </div>
   <div id="tweet-table">
     <!-- Main Site -->
     <main id="site-main">
@@ -166,7 +169,8 @@
   <!-- /Main Site -->
 
 
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
+  <script src="custom.js"></script>
 </body>
 <script>
   var twitsdata;
@@ -179,6 +183,12 @@
   var tcountry;
   var twitcountryselect;
   var requiredtwits = [];
+  var notweets = [];
+  var ctx  ; 
+  var myChart = new Chart( );
+  var tweetsondate = 0;
+  var tweetsanalysisdate = [];
+  var daterepeat;
   $(document).ready(function () {
 
     $.ajax({
@@ -201,6 +211,8 @@
       }
     });
   });
+
+
   function formatDate(input) {
 
     var datePart = input.match(/\d+/g),
@@ -211,6 +223,10 @@
   }
   function gettwit() {
     requiredtwits.splice(0, requiredtwits.length);
+    notweets.splice(0, notweets.length);
+    tweetsanalysisdate.splice(0, tweetsanalysisdate.length);
+
+    myChart.destroy();
     var x = document.getElementById("twitstartdate").value
     var y = document.getElementById("twitenddate").value
     twitcountryselect = document.getElementById("twitcountry").value
@@ -236,10 +252,10 @@
         var from = new Date(d1[2], parseInt(d1[1]) - 1, d1[0]);  // -1 because months are from 0 to 11
         var to = new Date(d2[2], parseInt(d2[1]) - 1, d2[0]);
         var check1 = new Date(c1[2], parseInt(c1[1]) - 1, c1[0]);
-         
+
 
         if ((check1 > from && check1 < to) && (twitcountryselect == tcountry)) {
-         
+
           requiredtwits.push(twitdata[i]);
 
 
@@ -248,11 +264,59 @@
       }
     }
     console.log(requiredtwits);
+
+
     twittab = "";
+    daterepeat = requiredtwits[0]["Datetime"];
     for (var k = 0; k < requiredtwits.length; k++) {
-      twittab += "<tr><td>" + k + "</td><td>" + requiredtwits[k]["Datetime"] + "</td><td>" + tcountry + "</td><td><img src='https://img.icons8.com/fluent/28/000000/twitter.png'/>   " + "<a add target='_blank'  href=" + "https://twitter.com/anyuser/status/".concat((requiredtwits[k]["Tweet Id"]).replace(/\#/g, '')) + ">https://twitter.com/anyuser/status/".concat(requiredtwits[k]["Tweet Id"]).replace(/\#/g, '')+ "</a></td></tr>"
+
+      if (daterepeat === requiredtwits[k]["Datetime"]) {
+        tweetsondate = tweetsondate + 1;
+
+      }
+      else {
+        notweets.push(tweetsondate);
+        tweetsanalysisdate.push(daterepeat);
+        tweetsondate = 1;
+        daterepeat = requiredtwits[k]["Datetime"];
+      }
+      twittab += "<tr><td>" + k + "</td><td>" + requiredtwits[k]["Datetime"] + "</td><td>" + tcountry + "</td><td><img src='https://img.icons8.com/fluent/28/000000/twitter.png'/>   " + "<a add target='_blank'  href=" + "https://twitter.com/anyuser/status/".concat((requiredtwits[k]["Tweet Id"]).replace(/\#/g, '')) + ">https://twitter.com/anyuser/status/".concat(requiredtwits[k]["Tweet Id"]).replace(/\#/g, '') + "</a></td></tr>"
+
+
     }
+    
     document.getElementById('twitsbody').innerHTML = twittab;
-  }</script>
+    console.log(notweets);
+
+    ctx = document.getElementById('canvas').getContext('2d');
+    myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: tweetsanalysisdate,
+        datasets: [{
+          label: 'Tweet Analysis',
+          data: notweets,
+          backgroundColor: 'transparent',
+          borderColor: '#0E75D3',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+
+  }
+
+
+
+
+
+</script>
 
 </html>
